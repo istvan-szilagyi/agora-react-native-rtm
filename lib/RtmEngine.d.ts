@@ -1,4 +1,4 @@
-import { RTMEventCallback, Callback, UserInfo, AgoraPeerMessage, UserAttribute, LocalInvitationProps, RemoteInvitationProps, UserProfile, ConnectionState, RTMLocalInvitationMessage, RTMLocalInvitationErrorMessage, RTMRemoteInvitationErrorMessage, RTMRemoteInvitationMessage, RTMChannelMessage, RTMMemberInfo } from './types.d';
+import { RTMEventCallback, Callback, UserInfo, AgoraPeerMessage, UserAttribute, LocalInvitationProps, RemoteInvitationProps, UserProfile, ConnectionState, RTMLocalInvitationMessage, RTMLocalInvitationErrorMessage, RTMRemoteInvitationErrorMessage, RTMRemoteInvitationMessage, RTMChannelMessage, RTMMemberInfo, RTMSendMessageOptions } from "./types.d";
 export interface RtmEngineEvents {
     /**
      * @event
@@ -67,27 +67,27 @@ export interface RtmEngineEvents {
      */
     remoteInvitationAccepted: (evt: RTMRemoteInvitationMessage) => void;
     /**
-      * @event
-      * @param evt The received event object {@link RTMRemoteInvitationMessage}
-      * remoteInvitationRefused | occurs when remote invitation refused |
-      */
+     * @event
+     * @param evt The received event object {@link RTMRemoteInvitationMessage}
+     * remoteInvitationRefused | occurs when remote invitation refused |
+     */
     remoteInvitationRefused: (evt: RTMRemoteInvitationMessage) => void;
     /**
-      * @event
-      * @param evt The received event object {@link RTMRemoteInvitationMessage}
-      * remoteInvitationCanceled | occurs when remote invitation canceled |
-      */
+     * @event
+     * @param evt The received event object {@link RTMRemoteInvitationMessage}
+     * remoteInvitationCanceled | occurs when remote invitation canceled |
+     */
     remoteInvitationCanceled: (evt: RTMRemoteInvitationMessage) => void;
     /**
-      * @event
-      * @param evt The received event object {@link RTMChannelMessage}
-      * channelMessageReceived | occurs when received channel message |
+     * @event
+     * @param evt The received event object {@link RTMChannelMessage}
+     * channelMessageReceived | occurs when received channel message |
      */
     channelMessageReceived: (evt: RTMChannelMessage) => void;
     /**
-      * @event
-      * @param evt The received event object {@link RTMMemberInfo}
-      * channelMemberJoined | occurs when some one joined in the subscribed channel
+     * @event
+     * @param evt The received event object {@link RTMMemberInfo}
+     * channelMemberJoined | occurs when some one joined in the subscribed channel
      */
     channelMemberJoined: (evt: RTMMemberInfo) => void;
     /**
@@ -231,9 +231,10 @@ export default class RtmEngine {
      * NOTICE: text bytelength has MAX_SIZE 32kb limit.
      * @param channelId string.
      * @param text string (bytesize shouldn't >= 32kb)
+     * @param options message sending options
      * @return Promise<any>
      */
-    sendMessageByChannelId(channelId: string, text: string): Promise<any>;
+    sendMessageByChannelId(channelId: string, text: string, options?: RTMSendMessageOptions): Promise<any>;
     /**
      * supports platform: ios, android
      * This method enables query peer online user by id array.
