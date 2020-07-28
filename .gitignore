@@ -69,7 +69,6 @@ android/.gradle
 *.*~
 android/proguard-rules.pro
 docs
-lib
 latest
 examples/chatapp/ios/Pods
 **/*.*~
