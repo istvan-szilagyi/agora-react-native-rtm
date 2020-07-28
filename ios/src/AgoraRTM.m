@@ -244,9 +244,14 @@ RCT_EXPORT_METHOD(sendMessageByChannelId:(NSDictionary *)params
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject){
   AgoraRtmChannel *rtmChannel = self.channels[params[@"channelId"]];
+  AgoraRtmSendMessageOptions *options = [[AgoraRtmSendMessageOptions new] init];
+  if (params[@"options"] != nil) {
+    options.enableOfflineMessaging = [params[@"options"][@"enableOfflineMessaging"] boolValue];
+    options.enableHistoricalMessaging = [params[@"options"][@"enableHistoricalMessaging"] boolValue];
+  }
   if (rtmChannel != nil) {
     AgoraRtmMessage *message = [[AgoraRtmMessage new] initWithText:params[@"text"]];
-    [rtmChannel sendMessage:message completion:^(AgoraRtmSendChannelMessageErrorCode errorCode) {
+    [rtmChannel sendMessage:message sendMessageOptions:options completion:^(AgoraRtmSendChannelMessageErrorCode errorCode) {
       if (0 != (int)errorCode) {
         reject(@(-1).stringValue, @(errorCode).stringValue, nil);
       } else {
