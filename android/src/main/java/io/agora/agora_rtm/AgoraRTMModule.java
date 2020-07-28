@@ -29,6 +29,7 @@ import io.agora.rtm.RtmAttribute;
 import io.agora.rtm.RtmCallEventListener;
 import io.agora.rtm.RtmCallManager;
 import io.agora.rtm.RtmChannel;
+import io.agora.rtm.RtmChannelAttribute;
 import io.agora.rtm.RtmChannelListener;
 import io.agora.rtm.RtmChannelMember;
 import io.agora.rtm.RtmClient;
@@ -604,6 +605,11 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         sendEvent(AgoraRTMConstants.AG_TOKEN_EXPIRED, params);
     }
 
+    @Override
+    public void onPeersOnlineStatusChanged(Map<String, Integer> map) {
+
+    }
+
     // RtmCallEventListener
     @Override
     public void onLocalInvitationReceivedByPeer(LocalInvitation localInvitation) {
@@ -715,6 +721,16 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         params.putInt("code", code);
         params.putString("response", remoteInvitation.getResponse());
         sendEvent(AgoraRTMConstants.AG_REMOTEINVITATIONFAILURE, params);
+    }
+
+    @Override
+    public void onMemberCountUpdated(int i) {
+
+    }
+
+    @Override
+    public void onAttributesUpdated(List<RtmChannelAttribute> list) {
+
     }
 
     // RtmChannelListener
