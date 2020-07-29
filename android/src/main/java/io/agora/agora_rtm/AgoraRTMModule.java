@@ -292,11 +292,17 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         }
     }
 
-    // sned channel message by channel id
+    // send channel message by channel id
     @ReactMethod
     public void sendMessageByChannelId(ReadableMap params, final Promise promise) {
         final String channelId = params.getString("channelId");
         final String text = params.getString("text");
+        final SendMessageOptions options = new SendMessageOptions();
+        if (params.hasKey("options")) {
+            final ReadableMap optionsMap = params.getMap("options");
+            options.enableOfflineMessaging = optionsMap.getBoolean("enableOfflineMessaging");
+            options.enableHistoricalMessaging = optionsMap.getBoolean("enableHistoricalMessaging");
+        }
         RtmChannel rtmChannel = channels.get(channelId);
 
         if (null == rtmChannel) {
@@ -304,7 +310,7 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         } else {
             RtmMessage rtmMessage = rtmClient.createMessage();
             rtmMessage.setText(text);
-            rtmChannel.sendMessage(rtmMessage, new ResultCallback<Void>() {
+            rtmChannel.sendMessage(rtmMessage, options, new ResultCallback<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     promise.resolve(null);
