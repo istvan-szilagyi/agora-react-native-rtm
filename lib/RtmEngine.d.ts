@@ -227,6 +227,19 @@ export default class RtmEngine {
     getChannelMembersBychannelId(channelId: string): Promise<any>;
     /**
      * supports platform: ios, android
+     * This method enables you get channel attributes by channel id.
+     * @param channelId string.
+     * @return Promise<Attributes>
+     *
+     * Attributes
+     * ---
+     * key | string | attribute name|
+     * value | string | attribute value|
+     * ---
+     */
+    getChannelAttributesByChannelId(channelId: string): Promise<any>;
+    /**
+     * supports platform: ios, android
      * This method enables send message by channel id.
      * NOTICE: text bytelength has MAX_SIZE 32kb limit.
      * @param channelId string.
