@@ -239,6 +239,23 @@ RCT_EXPORT_METHOD(getChannelMembersBychannelId:(NSString *)uid
   }
 }
 
+// get channel attributes by channel id
+RCT_EXPORT_METHOD(getChannelAttributesByChannelId:(NSString *)uid
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [self.rtmEngine getChannelAllAttributes:uid completion:^(NSArray<AgoraRtmChannelAttribute *> * _Nullable attributes, AgoraRtmProcessAttributeErrorCode errorCode) {
+        if (0 != (int)errorCode) {
+          reject(@(-1).stringValue, @(errorCode).stringValue, nil);
+        } else {
+            NSMutableDictionary *attributesDict = [NSMutableDictionary new];
+            for (AgoraRtmChannelAttribute *attribute in attributes) {
+                [attributesDict setObject:attribute.value forKey:attribute.key];
+            }
+            resolve(attributesDict);
+        }
+    }];
+}
+
 // send message by channel id
 RCT_EXPORT_METHOD(sendMessageByChannelId:(NSDictionary *)params
                   resolve:(RCTPromiseResolveBlock)resolve
