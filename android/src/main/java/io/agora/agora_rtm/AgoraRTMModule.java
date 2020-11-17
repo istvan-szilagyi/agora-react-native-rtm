@@ -292,6 +292,26 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         }
     }
 
+    // get channel attributes by channel id
+    @ReactMethod
+    public void getChannelAttributesByChannelId(final String channelId, final Promise promise) {
+        rtmClient.getChannelAttributes(channelId, new ResultCallback<List<RtmChannelAttribute>>() {
+            @Override
+            public void onSuccess(List<RtmChannelAttribute> rtmChannelAttributes) {
+                WritableMap attributes = Arguments.createMap();
+                for (RtmChannelAttribute attribute: rtmChannelAttributes) {
+                    attributes.putString(attribute.getKey(), attribute.getValue());
+                }
+                promise.resolve(attributes);
+            }
+
+            @Override
+            public void onFailure(ErrorInfo errorInfo) {
+                promise.reject(Integer.toString(errorInfo.getErrorCode()), errorInfo.getErrorDescription());
+            }
+        });
+    }
+
     // send channel message by channel id
     @ReactMethod
     public void sendMessageByChannelId(ReadableMap params, final Promise promise) {
