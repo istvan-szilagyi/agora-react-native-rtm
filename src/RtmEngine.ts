@@ -133,6 +133,13 @@ export interface RtmEngineEvents {
   channelMemberLeft: (evt: RTMMemberInfo) => void;
 
   /**
+     * @event
+     * @param evt The received attributes object
+     * channelAttributesChanged | occurs when the channel attributes are changed
+     */
+    channelAttributesChanged: (evt: any) => void;
+
+  /**
    * @event
    * @param evt The received event object
    * tokenExpired | occurs when token has expired |
