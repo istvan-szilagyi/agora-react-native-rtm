@@ -24,5 +24,6 @@ static NSString *AG_REMOTEINVITATIONCANCELED = @"ag_rtm_remoteInvitationCanceled
 static NSString *AG_CHANNELMESSAGERECEVIED = @"ag_rtm_channelMessageReceived";
 static NSString *AG_CHANNELMEMBERJOINED = @"ag_rtm_channelMemberJoined";
 static NSString *AG_CHANNELMEMBERLEFT = @"ag_rtm_channelMemberLeft";
+static NSString *AG_CHANNELATTRIBUTESCHANGED = @"ag_rtm_channelAttributesChanged";
 static NSString *AG_TOKEN_EXPIRED = @"ag_rtm_tokenExpired";
 #endif /* AgoraConst_h */

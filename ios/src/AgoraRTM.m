@@ -61,6 +61,7 @@ RCT_EXPORT_MODULE();
       AG_CHANNELMESSAGERECEVIED,
       AG_CHANNELMEMBERJOINED,
       AG_CHANNELMEMBERLEFT,
+      AG_CHANNELATTRIBUTESCHANGED,
       AG_TOKEN_EXPIRED
   ];
 }
@@ -528,6 +529,26 @@ RCT_EXPORT_METHOD(refuseRemoteInvitation:(NSDictionary *)params
                                                      @"ts": @(message.serverReceivedTs),
                                                      @"offline": @(message.isOfflineMessage)
                                                      }];
+}
+
+- (void)channel:(AgoraRtmChannel *)channel attributeUpdate:(NSArray<AgoraRtmChannelAttribute *> *)attributes {
+    NSString *channelId;
+    for (NSString *key in self.channels.allKeys) {
+        if ([self.channels[key] isEqual:channel]) {
+            channelId = key;
+            break;
+        }
+    }
+    if (channelId != nil) {
+        NSMutableDictionary *attributesDict = [NSMutableDictionary new];
+        for (AgoraRtmChannelAttribute *attribute in attributes) {
+            [attributesDict setObject:attribute.value forKey:attribute.key];
+        }
+        [self sendEvent:AG_CHANNELATTRIBUTESCHANGED params:@{
+            @"channelId": channelId,
+            @"attributes": attributesDict,
+        }];
+    }
 }
 
 #pragma mark - AgoraRtmCallDelegate
