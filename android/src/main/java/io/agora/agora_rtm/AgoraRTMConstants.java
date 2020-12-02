@@ -17,6 +17,7 @@ public final class AgoraRTMConstants {
     public static final String AG_CHANNELMESSAGERECEVIED = "ag_rtm_channelMessageReceived";
     public static final String AG_CHANNELMEMBERJOINED = "ag_rtm_channelMemberJoined";
     public static final String AG_CHANNELMEMBERLEFT = "ag_rtm_channelMemberLeft";
+    public static final String AG_CHANNELATTRIBUTESCHANGED = "ag_rtm_channelAttributesChanged";
     public static final String AG_TOKEN_EXPIRED = "ag_rtm_tokenExpired";
 
 }

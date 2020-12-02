@@ -1,6 +1,6 @@
 package io.agora.agora_rtm;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -39,7 +39,7 @@ import io.agora.rtm.SendMessageOptions;
 import io.agora.rtm.internal.RtmSdkContext;
 
 public class AgoraRTMModule extends ReactContextBaseJavaModule
-        implements RtmClientListener, RtmCallEventListener, RtmChannelListener {
+        implements RtmClientListener, RtmCallEventListener {
 
     private Map<String, LocalInvitation> localInvitations = new HashMap<>();
     private Map<String, RemoteInvitation> remoteInvitations = new HashMap<>();
@@ -212,7 +212,60 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
     // join channel
     @ReactMethod
     public void joinChannel(final String channelId, final Promise promise) {
-        final RtmChannel rtmChannel = rtmClient.createChannel(channelId, this);
+        final RtmChannel rtmChannel = rtmClient.createChannel(channelId, new RtmChannelListener() {
+            @Override
+            public void onMemberCountUpdated(int i) {
+
+            }
+
+            @Override
+            public void onAttributesUpdated(List<RtmChannelAttribute> list) {
+                WritableMap attributes = Arguments.createMap();
+                for (RtmChannelAttribute attribute: list) {
+                    attributes.putString(attribute.getKey(), attribute.getValue());
+                }
+                WritableMap message = Arguments.createMap();
+                message.putString("channelId", channelId);
+                message.putMap("attributes", attributes);
+                sendEvent(AgoraRTMConstants.AG_CHANNELATTRIBUTESCHANGED, message);
+            }
+
+            @Override
+            public void onMessageReceived(RtmMessage rtmMessage, RtmChannelMember rtmChannelMember) {
+                String channelId = rtmChannelMember.getChannelId();
+                String ts = Long.toString(rtmMessage.getServerReceivedTs());
+                String text = rtmMessage.getText();
+                boolean isOffline = rtmMessage.isOfflineMessage();
+                WritableMap message = Arguments.createMap();
+                String uid = rtmChannelMember.getUserId();
+                message.putString("channelId", channelId);
+                message.putString("uid", uid);
+                message.putString("text", text);
+                message.putString("ts", ts);
+                message.putBoolean("offline", isOffline);
+                sendEvent(AgoraRTMConstants.AG_CHANNELMESSAGERECEVIED, message);
+            }
+
+            @Override
+            public void onMemberJoined(RtmChannelMember rtmChannelMember) {
+                String channelId = rtmChannelMember.getChannelId();
+                String userId = rtmChannelMember.getUserId();
+                WritableMap message = Arguments.createMap();
+                message.putString("channelId", channelId);
+                message.putString("uid", userId);
+                sendEvent(AgoraRTMConstants.AG_CHANNELMEMBERJOINED, message);
+            }
+
+            @Override
+            public void onMemberLeft(RtmChannelMember rtmChannelMember) {
+                String channelId = rtmChannelMember.getChannelId();
+                String userId = rtmChannelMember.getUserId();
+                WritableMap message = Arguments.createMap();
+                message.putString("channelId", channelId);
+                message.putString("uid", userId);
+                sendEvent(AgoraRTMConstants.AG_CHANNELMEMBERLEFT, message);
+            }
+        });
         if (null == rtmChannel) {
             promise.reject("-1", "channel_create_failed");
         } else {
@@ -747,53 +800,5 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
         params.putInt("code", code);
         params.putString("response", remoteInvitation.getResponse());
         sendEvent(AgoraRTMConstants.AG_REMOTEINVITATIONFAILURE, params);
-    }
-
-    @Override
-    public void onMemberCountUpdated(int i) {
-
-    }
-
-    @Override
-    public void onAttributesUpdated(List<RtmChannelAttribute> list) {
-
-    }
-
-    // RtmChannelListener
-    // channel message received
-    @Override
-    public void onMessageReceived(RtmMessage rtmMessage, RtmChannelMember rtmChannelMember) {
-        String channelId = rtmChannelMember.getChannelId();
-        String ts = Long.toString(rtmMessage.getServerReceivedTs());
-        String text = rtmMessage.getText();
-        boolean isOffline = rtmMessage.isOfflineMessage();
-        WritableMap message = Arguments.createMap();
-        String uid = rtmChannelMember.getUserId();
-        message.putString("channelId", channelId);
-        message.putString("uid", uid);
-        message.putString("text", text);
-        message.putString("ts", ts);
-        message.putBoolean("offline", isOffline);
-        sendEvent(AgoraRTMConstants.AG_CHANNELMESSAGERECEVIED, message);
-    }
-
-    @Override
-    public void onMemberJoined(RtmChannelMember rtmChannelMember) {
-        String channelId = rtmChannelMember.getChannelId();
-        String userId = rtmChannelMember.getUserId();
-        WritableMap message = Arguments.createMap();
-        message.putString("channelId", channelId);
-        message.putString("uid", userId);
-        sendEvent(AgoraRTMConstants.AG_CHANNELMEMBERJOINED, message);
-    }
-
-    @Override
-    public void onMemberLeft(RtmChannelMember rtmChannelMember) {
-        String channelId = rtmChannelMember.getChannelId();
-        String userId = rtmChannelMember.getUserId();
-        WritableMap message = Arguments.createMap();
-        message.putString("channelId", channelId);
-        message.putString("uid", userId);
-        sendEvent(AgoraRTMConstants.AG_CHANNELMEMBERLEFT, message);
     }
 }
