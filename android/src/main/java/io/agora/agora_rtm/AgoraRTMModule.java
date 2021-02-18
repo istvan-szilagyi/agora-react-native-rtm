@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.agora.rtm.ChannelAttributeOptions;
 import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.LocalInvitation;
 import io.agora.rtm.RemoteInvitation;
@@ -356,6 +358,27 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
                     attributes.putString(attribute.getKey(), attribute.getValue());
                 }
                 promise.resolve(attributes);
+            }
+
+            @Override
+            public void onFailure(ErrorInfo errorInfo) {
+                promise.reject(Integer.toString(errorInfo.getErrorCode()), errorInfo.getErrorDescription());
+            }
+        });
+    }
+
+    // add or update channel attribute by channel id
+    @ReactMethod
+    public void addOrUpdateChannelAttributes(final String channelId, final String attributeName, final String attributeValue ,final Promise promise) {
+        RtmChannelAttribute attribute = new RtmChannelAttribute(attributeName, attributeValue);
+        List<RtmChannelAttribute> attributes = Arrays.asList(attribute);
+        ChannelAttributeOptions options = new ChannelAttributeOptions(true);
+        rtmClient.addOrUpdateChannelAttributes(channelId, attributes, options, new ResultCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                WritableMap attribute = Arguments.createMap();
+                attribute.putString(attributeName, attributeValue);
+                promise.resolve(attribute);
             }
 
             @Override
