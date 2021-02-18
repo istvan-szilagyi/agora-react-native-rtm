@@ -369,7 +369,7 @@ public class AgoraRTMModule extends ReactContextBaseJavaModule
 
     // add or update channel attribute by channel id
     @ReactMethod
-    public void addOrUpdateChannelAttributes(final String channelId, final String attributeName, final String attributeValue ,final Promise promise) {
+    public void addOrUpdateChannelAttributeByChannelId(final String channelId, final String attributeName, final String attributeValue ,final Promise promise) {
         RtmChannelAttribute attribute = new RtmChannelAttribute(attributeName, attributeValue);
         List<RtmChannelAttribute> attributes = Arrays.asList(attribute);
         ChannelAttributeOptions options = new ChannelAttributeOptions(true);
