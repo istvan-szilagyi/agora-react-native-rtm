@@ -246,13 +246,13 @@ export default class RtmEngine {
     getChannelAttributesByChannelId(channelId: string): Promise<any>;
     /**
      * supports platform: ios, android
-     * This method enables you set channel attributes by channel id.
+     * This method enables you add/update channel attribute by channel id.
      * @param channelId string.
      * @param attributeName string.
      * @param attributeValue string.
      * @return Promise
      */
-    setChannelAttributeByChannelId(channelId, attributeName, attributeValue): Promise<any>;
+    addOrUpdateChannelAttributeByChannelId(channelId, attributeName, attributeValue): Promise<any>;
     /**
      * supports platform: ios, android
      * This method enables send message by channel id.

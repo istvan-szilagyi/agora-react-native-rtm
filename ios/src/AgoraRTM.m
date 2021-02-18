@@ -257,6 +257,28 @@ RCT_EXPORT_METHOD(getChannelAttributesByChannelId:(NSString *)uid
     }];
 }
 
+// update channel attribute by channel id
+RCT_EXPORT_METHOD(addOrUpdateChannelAttributeByChannelId:(NSString *)uid
+                  attributeName:(NSString *)attributeName
+                  attributeValue:(NSString *)attributeValue
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    AgoraRtmChannelAttribute *attribute = [[AgoraRtmChannelAttribute alloc] init];
+    attribute.key = attributeName;
+    attribute.value = attributeValue;
+    
+    AgoraRtmChannelAttributeOptions *options = [[AgoraRtmChannelAttributeOptions alloc] init];
+    options.enableNotificationToChannelMembers = YES;
+    
+    [self.rtmEngine addOrUpdateChannel:uid Attributes:@[attribute] Options:options completion:^(AgoraRtmProcessAttributeErrorCode errorCode) {
+        if (0 != (int)errorCode) {
+            reject(@(-1).stringValue, @(errorCode).stringValue, nil);
+        } else {
+            resolve(@{attributeName : attributeValue});
+        }
+    }];
+}
+
 // send message by channel id
 RCT_EXPORT_METHOD(sendMessageByChannelId:(NSDictionary *)params
                   resolve:(RCTPromiseResolveBlock)resolve
